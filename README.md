@@ -162,6 +162,3 @@ Contact
 LinkedIn: linkedin.com/in/mohammad-alquamah
 GitHub: github.com/alquamah-blue
 
-Tell me:
-
-Do you want the Detection Documentation Template next?
