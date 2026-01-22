@@ -1,164 +1,280 @@
-SOC Detection Lab — Blue Team Portfolio
-Overview
+# 🛡️ SOC Detection Engineering & Adversary Emulation Lab
 
-This repository contains hands-on SOC detection engineering projects built using a self-hosted SIEM environment. The lab simulates real-world adversary behavior using Atomic Red Team and custom attack tooling, with detections created and validated using endpoint telemetry and security logs.
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Role](https://img.shields.io/badge/Open_to_Work-SOC_Analyst_%7C_Intern-blue)
+![BTL1](https://img.shields.io/badge/Certification-BTL1_Gold_Coin-gold)
 
-The goal of this project is to demonstrate practical SOC skills including alert creation, detection tuning, incident investigation, and MITRE ATT&CK mapping.
+**A practical implementation of a Home Lab SIEM tailored for Threat Hunting, Detection Engineering, and Incident Response.**
 
-Lab Architecture
+---
 
-Core Components:
+## 📖 Overview
+This repository documents a hands-on **SOC detection engineering environment** built to simulate enterprise-grade security monitoring. The lab integrates **Wazuh SIEM**, **Sysmon**, and **Atomic Red Team** to generate, ingest, and detect real-world adversary behaviors mapped to the MITRE ATT&CK framework.
 
-SIEM Platform: Wazuh
+Unlike theoretical study, this project focuses on the **Detection Engineering Lifecycle**: simulating attacks, analyzing raw telemetry, writing custom XML rules, and tuning for false positives.
 
-Endpoint Telemetry: Sysmon + Windows Security Logs
+## 🏗️ Lab Architecture
 
-Attack Simulation: Atomic Red Team
+### Core Components
+| Component | Technology | Purpose |
+| :--- | :--- | :--- |
+| **SIEM** | **Wazuh** | Log aggregation, correlation, and alerting. |
+| **Telemetry** | **Sysmon + WinEventLog** | Granular endpoint visibility (Process creation, Network connections). |
+| **Simulation** | **Atomic Red Team** | Executing mapped TTPs (Techniques, Tactics, and Procedures). |
+| **Forensics** | **Autopsy, Wireshark** | Post-incident artifact analysis. |
 
-Virtualization: VMware / VirtualBox
+### Data Flow Diagram
 
-Analysis Tools: Wireshark, Autopsy, FTK Imager
+```mermaid
+graph LR
+    A[Attacker Simulation] -->|Atomic Red Team| B(Compromised Endpoint)
+    B -->|Sysmon + Logs| C{Wazuh Agent}
+    C -->|Encrypted Channel| D[Wazuh Manager]
+    D -->|Log Analysis| E[Detection Engine]
+    E -->|Matches Rule| F[Alert Generation]
+    F -->|Triage| G[Investigation]
 
-Architecture Flow:
+    %% Color Styles
+    classDef attacker fill:#e63946,stroke:#333,stroke-width:2px,color:white;
+    classDef victim fill:#f4a261,stroke:#333,stroke-width:2px,color:white;
+    classDef infra fill:#457b9d,stroke:#333,stroke-width:2px,color:white;
+    classDef success fill:#2a9d8f,stroke:#333,stroke-width:2px,color:white;
 
-Attacker Simulation (Atomic Red Team)
-        ↓
-Compromised Windows Endpoint
-(Sysmon + Event Logs)
-        ↓
-Wazuh Agent
-        ↓
-Wazuh Manager / SIEM
-        ↓
-Detection Rules → Alerts → Investigation
+    %% Assign Classes
+    class A attacker;
+    class B victim;
+    class C,D,E infra;
+    class F,G success;
+```
+---
 
-Detection Engineering Approach
+## 🎯 Detection Engineering Workflow
 
-Each detection project follows a standardized SOC workflow:
+This lab follows a standardized **SOC detection pipeline**:
 
-Simulate adversary technique
+1. **Simulation** — Execute MITRE ATT&CK techniques using Atomic Red Team  
+2. **Ingestion** — Validate log forwarding and agent telemetry in Wazuh  
+3. **Analysis** — Identify Indicators of Attack (IOAs) using Sysmon & Security logs  
+4. **Development** — Build Wazuh XML rules and correlation logic  
+5. **Validation** — Re-run attack to confirm alert triggering  
+6. **Tuning** — Reduce false positives and administrative noise  
 
-Capture endpoint and security telemetry
+---
 
-Identify behavioral indicators
+## 🔍 Active Detections
 
-Create detection logic
+| Tactic | ID | Technique | Data Source | Status |
+-------|----|----------|-------------|--------
+Credential Access | T1003 | LSASS Memory Dumping | Sysmon Event ID 10 | 🟢 Active  
+Execution | T1059 | Obfuscated PowerShell | ScriptBlock Logs | 🟢 Active  
+Defense Evasion | T1070 | Clear Event Logs | Security Event ID 1102 | 🟢 Active  
 
-Validate alert generation
+---
 
-Tune false positives
+## 🚀 Detection Roadmap
 
-Document results
+Planned detection expansion:
 
-All detections are mapped to the MITRE ATT&CK framework and tested using controlled attack execution.
+- **Lateral Movement** — T1550 (Pass-the-Hash)  
+- **Command & Control** — T1071 (Beaconing Detection)  
+- **Ransomware Behavior** — T1490 (Shadow Copy Deletion)  
 
-Implemented Detection Use Cases
-Credential Access
+---
 
-T1003 — Credential Dumping
-Detection of LSASS access and suspicious memory dumping activity using Sysmon telemetry.
+## 📂 Repository Structure
 
-Execution [Planned]
-
-T1059 — PowerShell Abuse
-Detection of encoded command execution and suspicious PowerShell behavior.
-
-Persistence [Planned]
-
-T1136 — Local Account Creation
-Monitoring unauthorized local account creation and privilege escalation attempts.
-
-Lateral Movement [Planned]
-
-T1550 — Pass-the-Hash Behavior
-Detection of abnormal authentication patterns across multiple endpoints.
-
-Command and Control [Planned]
-
-T1071 — Beaconing Activity
-Identification of suspicious outbound communication patterns and C2-style behavior.
-
-Impact (Ransomware Indicators) [Planned]
-
-T1490 — Shadow Copy Deletion [Planned]
-Detection of volume shadow copy removal commonly associated with ransomware activity.
-
-Repository Structure
-SOC-Detection-Lab
-│
-├── credential_access
+```bash
+SOC-Detection-Lab/
+├── credential_access/
 │   └── T1003_credential_dumping.md
-│
-├── execution
+├── execution/
 │   └── T1059_powershell_detection.md
-│
-├── persistence
-│   └── T1136_local_account_creation.md
-│
-├── lateral_movement
-│   └── T1550_pass_the_hash.md
-│
-├── command_and_control
-│   └── T1071_beacon_detection.md
-│
-├── ransomware
-│   └── T1490_shadow_copy_deletion.md
-│
-├── diagrams
-│
-├── screenshots
-│
+├── persistence/
+├── lateral_movement/
+├── command_and_control/
+├── ransomware/
+├── diagrams/
+├── screenshots/
 └── README.md
+```
 
-Documentation Format
+---
+## 📝 Documentation Standard
 
-Each detection file includes:
+Each detection case includes:
 
-Attack technique description
+- Attack description  
+- Log evidence and telemetry analysis  
+- Detection logic (Wazuh XML / correlation)  
+- Alert proof screenshots  
+- False positive tuning notes  
 
-MITRE ATT&CK ID
+This mirrors **enterprise SOC documentation standards**.
 
-Log sources used
+---
 
-Detection logic explanation
+## 🧠 Skills Demonstrated
 
-Alert screenshots
+- SIEM rule engineering and alert tuning  
+- Endpoint telemetry analysis (Sysmon)  
+- SOC alert triage and investigation  
+- MITRE ATT&CK technique mapping  
+- Digital forensics and evidence handling  
 
-False positive analysis
+---
 
-Tuning methodology
+## 🏆 Certifications
 
-Investigation workflow
+🎖️ **Blue Team Level 1 (BTL1) — Gold Coin Distinction**  
 
-This mirrors real SOC detection documentation standards.
+Awarded for achieving **90%+ score** on a 24-hour hands-on SOC incident response exam.
 
-Skills Demonstrated
+---
 
-SIEM rule creation and alert tuning
+## ⚠️ Disclaimer
 
-Endpoint telemetry analysis (Sysmon)
+All adversary simulations are conducted in **isolated sandbox environments** strictly for educational and defensive research purposes.  
+❌ No production systems were targeted.
 
-SOC alert triage and investigation
+---
 
-MITRE ATT&CK mapping
+## 📬 Contact
 
-Forensic artifact analysis
+**👤 Mohammad Alquamah**  
+SOC Analyst | Detection Engineering Enthusiast  
 
-Malware behavior identification
+- 🔗 LinkedIn: https://linkedin.com/in/mohammad-alquamah
+- 💻 GitHub: https://github.com/alquamah-blue 
 
-Incident documentation
 
-Certifications
 
-Blue Team Level 1 (BTL1) — Gold Coin Distinction
-Security Blue Team
 
-Disclaimer
 
-All attack simulations are performed in isolated lab environments for educational and defensive security purposes only. No production systems or unauthorized networks are involved.
 
-Contact
 
-LinkedIn: linkedin.com/in/mohammad-alquamah
-GitHub: github.com/alquamah-blue
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
